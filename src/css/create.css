@@ -1,0 +1,77 @@
+.create-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+}
+
+.back-button {
+  padding: 8px 16px;
+  background-color: #757575;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.create-container h1 {
+  margin-bottom: 20px;
+}
+
+.create-container form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.create-container input[type="text"],
+.create-container textarea,
+.create-container input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+.create-container textarea {
+  resize: vertical;
+}
+
+.image-preview p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.error-message {
+  padding: 10px;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.create-container button[type="submit"] {
+  padding: 12px 30px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.create-container button[type="submit"]:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

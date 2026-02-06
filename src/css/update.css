@@ -1,0 +1,84 @@
+.update-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+}
+
+.update-back-btn {
+  padding: 8px 16px;
+  background-color: #757575;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.update-back-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.update-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.update-form input[type="text"],
+.update-form textarea,
+.update-form input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+.update-form textarea {
+  resize: vertical;
+}
+
+.update-form img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+.update-error {
+  padding: 10px;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.update-save-btn {
+  padding: 12px 30px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.update-save-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.loading-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.note {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
