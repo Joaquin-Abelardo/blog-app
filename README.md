@@ -13,6 +13,47 @@ REACT_APP_SUPABASE_URL=your_supabase_url
 REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 
+## BLOGS TABLE POLICIES
+-- Allow everyone to read blogs
+CREATE POLICY "Public can read blogs"
+ON public.blogs
+FOR SELECT
+USING (true);
+
+-- Allow logged-in users to create blogs
+CREATE POLICY "Users can insert blogs"
+ON public.blogs
+FOR INSERT
+WITH CHECK (auth.uid() = user_id);
+
+-- Allow users to update their own blogs
+CREATE POLICY "Users can update their own blogs"
+ON public.blogs
+FOR UPDATE
+USING (auth.uid() = user_id)
+WITH CHECK (auth.uid() = user_id);
+
+-- Allow users to delete their own blogs
+CREATE POLICY "Users can delete their own blogs"
+ON public.blogs
+FOR DELETE
+USING (auth.uid() = user_id);
+
+
+## COMMENTS TABLE POLICIES
+-- Allow everyone to read comments
+CREATE POLICY "Public can read comments"
+ON public.comments
+FOR SELECT
+USING (true);
+
+-- Allow logged-in users to create comments
+CREATE POLICY "Users can insert comments"
+ON public.comments
+FOR INSERT
+WITH CHECK (auth.uid() = user_id);
+
+
 
 
 # Getting Started with Create React App
