@@ -20,31 +20,33 @@ const Update = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (id) fetchBlog();
-  }, [id]);
+    if (!id || !user?.id) return;
 
-  const fetchBlog = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('blogs')
-        .select('*')
-        .eq('id', id)
-        .eq('user_id', user?.id) // Only fetch blogs the user owns
-        .single();
+    const fetchBlog = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('blogs')
+          .select('*')
+          .eq('id', id)
+          .eq('user_id', user.id)
+          .single();
 
-      if (error) throw error;
+        if (error) throw error;
 
-      setTitle(data.title);
-      setContent(data.content);
-      setCurrentImage(data.image_url || '');
-    } catch (err) {
-      console.error(err);
-      alert('Blog not found or you are not authorized');
-      navigate('/blogs');
-    } finally {
-      setLoading(false);
-    }
-  };
+        setTitle(data.title);
+        setContent(data.content);
+        setCurrentImage(data.image_url || '');
+      } catch (err) {
+        console.error(err);
+        alert('Blog not found or you are not authorized');
+        navigate('/blogs');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlog();
+  }, [id, user?.id, navigate]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -58,8 +60,10 @@ const Update = () => {
     try {
       const ext = file.name.split('.').pop();
       const fileName = `${user?.id}-${Date.now()}.${ext}`;
+
       await supabase.storage.from('blog-images').upload(fileName, file);
       const { data } = supabase.storage.from('blog-images').getPublicUrl(fileName);
+
       return data.publicUrl;
     } catch (err) {
       console.error('Error uploading image:', err);
@@ -80,6 +84,7 @@ const Update = () => {
       }
 
       let imageUrl = currentImage;
+
       if (newImage) {
         const uploaded = await uploadImage(newImage);
         if (!uploaded) {
@@ -99,7 +104,7 @@ const Update = () => {
           updated_at: new Date().toISOString(),
         })
         .eq('id', id)
-        .eq('user_id', user?.id); // Must match owner for RLS
+        .eq('user_id', user?.id);
 
       if (error) throw error;
 
