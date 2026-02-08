@@ -16,32 +16,44 @@ const Delete = () => {
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    if (id) fetchBlog();
-  }, [id]);
+    if (!id) return;
 
-  const fetchBlog = async () => {
-  const { data, error } = await supabase.from('blogs').select('*').eq('id', id).single();
-  if (error || data.user_id !== user?.id) {
-    alert('Blog not found or cannot delete others\' blogs');
-    return navigate('/blogs');
-  }
-  setBlog(data);
-  setLoading(false);
-};
+    const fetchBlog = async () => {
+      const { data, error } = await supabase
+        .from('blogs')
+        .select('*')
+        .eq('id', id)
+        .single();
 
+      if (error || data.user_id !== user?.id) {
+        alert("Blog not found or cannot delete others' blogs");
+        navigate('/blogs');
+        return;
+      }
+
+      setBlog(data);
+      setLoading(false);
+    };
+
+    fetchBlog();
+  }, [id, user?.id, navigate]);
 
   const handleDelete = async () => {
     setDeleting(true);
     try {
       // Delete comments first
-      await supabase.from('comments').delete().eq('blog_id', id).eq('user_id', user?.id);
+      await supabase
+        .from('comments')
+        .delete()
+        .eq('blog_id', id)
+        .eq('user_id', user?.id);
 
       // Delete blog
       const { error } = await supabase
         .from('blogs')
         .delete()
         .eq('id', id)
-        .eq('user_id', user?.id); // Must match owner for RLS
+        .eq('user_id', user?.id);
 
       if (error) throw error;
 
@@ -88,3 +100,4 @@ const Delete = () => {
 };
 
 export default Delete;
+
