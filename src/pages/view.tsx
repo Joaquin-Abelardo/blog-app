@@ -22,16 +22,10 @@ const View = () => {
 
   const fetchBlog = useCallback(async () => {
   if (!id) return;
-
   setLoading(true);
   try {
-    const { data, error } = await supabase
-      .from('blogs')
-      .select('*')
-      .eq('id', id)
-      .single();
+    const { data, error } = await supabase.from('blogs').select('*').eq('id', id).single();
     if (error) throw error;
-
     setBlog(data);
   } catch {
     alert('Failed to load blog');
@@ -40,18 +34,14 @@ const View = () => {
   }
 }, [id]);
 
-
-   const fetchComments = useCallback(async () => {
+const fetchComments = useCallback(async () => {
   if (!id) return;
-
   try {
-    const { data, error } = await supabase
-      .from('comments')
+    const { data, error } = await supabase.from('comments')
       .select('*')
       .eq('blog_id', id)
       .order('created_at', { ascending: false });
     if (error) throw error;
-
     setComments(data || []);
   } catch (err) {
     console.error(err);
@@ -210,3 +200,4 @@ useEffect(() => {
 };
 
 export default View;
+
