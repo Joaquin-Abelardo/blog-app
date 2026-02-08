@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../utils/supabaseClient';
 import { useSelector } from 'react-redux';
@@ -26,38 +26,42 @@ const View = () => {
     }
   }, [id]);
 
-  const fetchBlog = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('blogs')
-        .select('*')
-        .eq('id', id)
-        .single();
+  const fetchBlog = useCallback(async () => {
+  if (!id) return;
 
-      if (error) throw error;
-      setBlog(data);
-    } catch {
-      alert('Failed to load blog');
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  try {
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('*')
+      .eq('id', id)
+      .single();
 
-  const fetchComments = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('comments')
-        .select('*')
-        .eq('blog_id', id)
-        .order('created_at', { ascending: false });
+    if (error) throw error;
+    setBlog(data);
+  } catch {
+    alert('Failed to load blog');
+  } finally {
+    setLoading(false);
+  }
+}, [id]);
 
-      if (error) throw error;
-      setComments(data || []);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const fetchComments = useCallback(async () => {
+  if (!id) return;
+
+  try {
+    const { data, error } = await supabase
+      .from('comments')
+      .select('*')
+      .eq('blog_id', id)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    setComments(data || []);
+  } catch (err) {
+    console.error(err);
+  }
+}, [id]);
 
   const handleCommentImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
