@@ -29,7 +29,12 @@ const View = () => {
   const fetchBlog = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from('blogs').select('*').eq('id', id).single();
+      const { data, error } = await supabase
+        .from('blogs')
+        .select('*')
+        .eq('id', id)
+        .single();
+
       if (error) throw error;
       setBlog(data);
     } catch {
@@ -46,6 +51,7 @@ const View = () => {
         .select('*')
         .eq('blog_id', id)
         .order('created_at', { ascending: false });
+
       if (error) throw error;
       setComments(data || []);
     } catch (err) {
@@ -65,8 +71,12 @@ const View = () => {
     try {
       const ext = file.name.split('.').pop();
       const fileName = `${user?.id}-${Date.now()}.${ext}`;
+
       await supabase.storage.from('comment-images').upload(fileName, file);
-      const { data } = supabase.storage.from('comment-images').getPublicUrl(fileName);
+      const { data } = supabase.storage
+        .from('comment-images')
+        .getPublicUrl(fileName);
+
       return data.publicUrl;
     } catch (err) {
       console.error(err);
@@ -77,6 +87,7 @@ const View = () => {
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!commentText.trim()) return;
+
     setSubmittingComment(true);
 
     try {
@@ -118,23 +129,35 @@ const View = () => {
 
   if (!blog) return null;
 
-  
+  const { title, created_at, image_url, content } = blog;
 
   return (
     <div className="view-container">
       <div className="view-top-buttons">
-        <button className="view-btn back" onClick={() => navigate('/blogs')}>← Back to Blogs</button>
-          <>
-            <button className="view-btn edit" onClick={() => navigate(`/blogs/${id}/edit`)}>Edit</button>
-            <button className="view-btn delete" onClick={() => navigate(`/blogs/${id}/delete`)}>Delete</button>
-          </>
+        <button className="view-btn back" onClick={() => navigate('/blogs')}>
+          ← Back to Blogs
+        </button>
+        <button
+          className="view-btn edit"
+          onClick={() => navigate(`/blogs/${id}/edit`)}
+        >
+          Edit
+        </button>
+        <button
+          className="view-btn delete"
+          onClick={() => navigate(`/blogs/${id}/delete`)}
+        >
+          Delete
+        </button>
       </div>
 
       <article className="view-article">
-        <h1>{blog.title}</h1>
-        <p className="date">Published on {new Date(blog.created_at).toLocaleDateString()}</p>
-        {blog.image_url && <img src={blog.image_url} alt={blog.title} />}
-        <div className="content">{blog.content}</div>
+        <h1>{title}</h1>
+        <p className="date">
+          Published on {new Date(created_at).toLocaleDateString()}
+        </p>
+        {image_url && <img src={image_url} alt={title} />}
+        <div className="content">{content}</div>
       </article>
 
       <hr />
@@ -150,20 +173,31 @@ const View = () => {
             rows={4}
             required
           />
+
           <input type="file" accept="image/*" onChange={handleCommentImageChange} />
-          {commentPreview && <img src={commentPreview} alt="Comment preview" />}
+
+          {commentPreview && (
+            <img src={commentPreview} alt="Comment preview" />
+          )}
+
           <button type="submit" disabled={submittingComment}>
             {submittingComment ? 'Posting...' : 'Post Comment'}
           </button>
         </form>
 
-        {comments.length === 0 && <p className="note">No comments yet. Be the first to comment!</p>}
+        {comments.length === 0 && (
+          <p className="note">No comments yet. Be the first to comment!</p>
+        )}
 
         {comments.map(comment => (
           <div key={comment.id} className="comment">
             <p>{comment.content}</p>
-            {comment.image_url && <img src={comment.image_url} alt="Comment attachment" />}
-            <p className="date">{new Date(comment.created_at).toLocaleString()}</p>
+            {comment.image_url && (
+              <img src={comment.image_url} alt="Comment attachment" />
+            )}
+            <p className="date">
+              {new Date(comment.created_at).toLocaleString()}
+            </p>
           </div>
         ))}
       </div>
