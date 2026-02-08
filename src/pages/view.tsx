@@ -19,12 +19,6 @@ const View = () => {
   const [commentPreview, setCommentPreview] = useState('');
   const [submittingComment, setSubmittingComment] = useState(false);
 
-  useEffect(() => {
-    if (id) {
-      fetchBlog();
-      fetchComments();
-    }
-  }, [id]);
 
   const fetchBlog = useCallback(async () => {
   if (!id) return;
@@ -36,8 +30,8 @@ const View = () => {
       .select('*')
       .eq('id', id)
       .single();
-
     if (error) throw error;
+
     setBlog(data);
   } catch {
     alert('Failed to load blog');
@@ -46,7 +40,8 @@ const View = () => {
   }
 }, [id]);
 
-  const fetchComments = useCallback(async () => {
+
+   const fetchComments = useCallback(async () => {
   if (!id) return;
 
   try {
@@ -55,13 +50,18 @@ const View = () => {
       .select('*')
       .eq('blog_id', id)
       .order('created_at', { ascending: false });
-
     if (error) throw error;
+
     setComments(data || []);
   } catch (err) {
     console.error(err);
   }
 }, [id]);
+
+useEffect(() => {
+  fetchBlog();
+  fetchComments();
+}, [fetchBlog, fetchComments]);
 
   const handleCommentImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
