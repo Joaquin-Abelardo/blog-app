@@ -19,44 +19,50 @@ const ListBlogs = () => {
   const totalPages = Math.ceil(totalBlogs / blogsPerPage);
 
   useEffect(() => {
+    if (!user?.id) return;
+
+    const fetchBlogs = async () => {
+      setLoading(true);
+      try {
+        const start = (currentPage - 1) * blogsPerPage;
+        const end = start + blogsPerPage - 1;
+
+        // Total count for pagination
+        const { count, error: countError } = await supabase
+          .from('blogs')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id);
+
+        // Get blogs for this page
+        const { data, error } = await supabase
+          .from('blogs')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .range(start, end);
+
+        if (error || countError) throw error || countError;
+
+        setBlogs(data || []);
+        setTotalBlogs(count || 0);
+      } catch {
+        alert('Failed to load blogs');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchBlogs();
-  }, [currentPage]);
-
-  const fetchBlogs = async () => {
-    setLoading(true);
-    try {
-      const start = (currentPage - 1) * blogsPerPage;
-      const end = start + blogsPerPage - 1;
-
-      // Total count for pagination
-      const { count, error: countError } = await supabase
-        .from('blogs')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user?.id);
-
-      // Get blogs for this page
-      const { data, error } = await supabase
-        .from('blogs')
-        .select('*')
-        .eq('user_id', user?.id)
-        .order('created_at', { ascending: false })
-        .range(start, end);
-
-      if (error || countError) throw error || countError;
-
-      setBlogs(data || []);
-      setTotalBlogs(count || 0);
-    } catch {
-      alert('Failed to load blogs');
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [currentPage, user?.id]);
 
   const blogTitle = (text: string, max: number) =>
     text.length <= max ? text : text.substring(0, max) + '...';
 
-  if (loading) return <div className="listblogs-container"><h2>Loading blogs...</h2></div>;
+  if (loading) {
+    return (
+      <div className="listblogs-container"> <h2>Loading blogs...</h2></div>
+    );
+  }
 
   return (
     <div className="listblogs-container">
