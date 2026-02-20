@@ -1,3 +1,7 @@
+link to vercel
+https://simple-blog-app-taupe.vercel.app/login
+
+
 ## Database Setup
 1. Create a Supabase project
 2. Run tables.sql in SQL Editor
